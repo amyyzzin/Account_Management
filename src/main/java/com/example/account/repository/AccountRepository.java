@@ -1,4 +1,4 @@
-package com.example.account.repasitory;
+package com.example.account.repository;
 
 import com.example.account.domain.Account;
 import com.example.account.domain.AccountUser;
@@ -17,5 +17,4 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
     Optional<Account> findByAccountNumber(String AccountNumber);
 
     List<Account> findByAccountUser(AccountUser accountUser);
-
 }

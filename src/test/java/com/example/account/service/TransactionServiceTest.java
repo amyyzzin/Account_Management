@@ -5,9 +5,9 @@ import com.example.account.domain.AccountUser;
 import com.example.account.domain.Transaction;
 import com.example.account.dto.TransactionDto;
 import com.example.account.exception.AccountException;
-import com.example.account.repasitory.AccountRepository;
-import com.example.account.repasitory.AccountUserRepository;
-import com.example.account.repasitory.TransactionRepository;
+import com.example.account.repository.AccountRepository;
+import com.example.account.repository.AccountUserRepository;
+import com.example.account.repository.TransactionRepository;
 import com.example.account.type.AccountStatus;
 import com.example.account.type.ErrorCode;
 import org.junit.jupiter.api.DisplayName;
@@ -131,14 +131,14 @@ class TransactionServiceTest {
     @DisplayName("계좌 소유주 다름 - 잔액 사용 실패")
     void deleteAccountFailed_userUnMatch() {
         //given
-        AccountUser Pobi = AccountUser.builder()
-                .name("Pobi").build();
-        Pobi.setId(12L);
+        AccountUser pobi = AccountUser.builder()
+                .name("pobi").build();
+        pobi.setId(12L);
         AccountUser harry = AccountUser.builder()
                 .name("Harry").build();
         harry.setId(13L);
         given(accountUserRepository.findById(anyLong()))
-                .willReturn(Optional.of(Pobi));
+                .willReturn(Optional.of(pobi));
         given(accountRepository.findByAccountNumber(anyString()))
                 .willReturn(Optional.of(Account.builder()
                         .accountUser(harry)
@@ -157,14 +157,14 @@ class TransactionServiceTest {
     @DisplayName("해지 계좌는 사용 할 수 없다.")
     void deleteAccountFailed_alreadyUnregistered() {
         //given
-        AccountUser Pobi = AccountUser.builder()
-                .name("Pobi").build();
-        Pobi.setId(12L);
+        AccountUser pobi = AccountUser.builder()
+                .name("pobi").build();
+        pobi.setId(12L);
         given(accountUserRepository.findById(anyLong()))
-                .willReturn(Optional.of(Pobi));
+                .willReturn(Optional.of(pobi));
         given(accountRepository.findByAccountNumber(anyString()))
                 .willReturn(Optional.of(Account.builder()
-                        .accountUser(Pobi)
+                        .accountUser(pobi)
                         .accountStatus(AccountStatus.UNREGISTERED)
                         .balance(0L)
                         .accountNumber("1000000012").build()));
@@ -460,7 +460,7 @@ class TransactionServiceTest {
                 .transactionType(USE)
                 .transactionResultType(S)
                 .transactionId("transactionId")
-                .transactedAt(LocalDateTime.now().minusYears(1).minusDays(1))
+                .transactedAt(LocalDateTime.now().minusYears(1))
                 .amount(CANCEL_AMOUNT)
                 .balanceSnapshot(9000L)
                 .build();
@@ -468,7 +468,8 @@ class TransactionServiceTest {
                 .willReturn(Optional.of(transaction));
 
         //when
-        TransactionDto transactionDto = transactionService.quertTransaction("trxId");
+        TransactionDto transactionDto = transactionService.queryTransaction("trxId");
+
         //then
         assertEquals(USE, transactionDto.getTransactionType());
         assertEquals(S, transactionDto.getTransactionResultType());
@@ -485,7 +486,7 @@ class TransactionServiceTest {
 
         //when
         AccountException exception = assertThrows(AccountException.class,
-                () -> transactionService.quertTransaction("transactionId"));
+                () -> transactionService.queryTransaction("transactionId"));
 
         //then
         assertEquals(ErrorCode.TRANSACTION_NOT_FOUND, exception.getErrorCode());

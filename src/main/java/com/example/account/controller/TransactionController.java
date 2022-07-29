@@ -69,6 +69,6 @@ public class TransactionController {
     public QueryTransactionResponse queryTransaction(
             @PathVariable String transactionId) {
         return QueryTransactionResponse.from(
-                transactionService.quertTransaction(transactionId));
+                transactionService.queryTransaction(transactionId));
     }
 }

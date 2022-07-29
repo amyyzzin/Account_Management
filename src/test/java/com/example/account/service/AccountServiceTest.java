@@ -4,8 +4,8 @@ import com.example.account.domain.Account;
 import com.example.account.domain.AccountUser;
 import com.example.account.dto.AccountDto;
 import com.example.account.exception.AccountException;
-import com.example.account.repasitory.AccountRepository;
-import com.example.account.repasitory.AccountUserRepository;
+import com.example.account.repository.AccountRepository;
+import com.example.account.repository.AccountUserRepository;
 import com.example.account.type.AccountStatus;
 import com.example.account.type.ErrorCode;
 import org.junit.jupiter.api.DisplayName;
@@ -45,12 +45,15 @@ class AccountServiceTest {
         AccountUser user = AccountUser.builder()
                 .name("Pobi").build();
         user.setId(12L);
+
         given(accountUserRepository.findById(anyLong()))
                 .willReturn(Optional.of(user));
+
         given(accountRepository.findFirstByOrderByIdDesc())
                 .willReturn(Optional.of(Account.builder()
                         .accountUser(user)
                         .accountNumber("1000000012").build()));
+
         given(accountRepository.save(any()))
                 .willReturn(Account.builder()
                         .accountUser(user)
@@ -65,10 +68,10 @@ class AccountServiceTest {
         verify(accountRepository, times(1)).save(captor.capture());
         assertEquals(12L, accountDto.getUserId());
         assertEquals("1000000013", captor.getValue().getAccountNumber());
-
     }
 
     @Test
+    @DisplayName("계좌 없음 - 첫 계좌 생성")
     void createFirstAccount() {
         //given
         AccountUser user = AccountUser.builder()
@@ -107,7 +110,6 @@ class AccountServiceTest {
 
         //then
         assertEquals(ErrorCode.USER_NOT_FOUND, exception.getErrorCode());
-
     }
 
     @Test
@@ -136,8 +138,10 @@ class AccountServiceTest {
         AccountUser user = AccountUser.builder()
                 .name("Pobi").build();
         user.setId(12L);
+
         given(accountUserRepository.findById(anyLong()))
                 .willReturn(Optional.of(user));
+
         given(accountRepository.findByAccountNumber(anyString()))
                 .willReturn(Optional.of(Account.builder()
                         .accountUser(user)
@@ -177,8 +181,10 @@ class AccountServiceTest {
         AccountUser user = AccountUser.builder()
                 .name("Pobi").build();
         user.setId(12L);
+
         given(accountUserRepository.findById(anyLong()))
                 .willReturn(Optional.of(user));
+
         given(accountRepository.findByAccountNumber(anyString()))
                 .willReturn(Optional.empty());
 
@@ -195,14 +201,14 @@ class AccountServiceTest {
     @DisplayName("계좌 소유주 다름")
     void deleteAccountFailed_userUnMatch() {
         //given
-        AccountUser Pobi = AccountUser.builder()
-                .name("Pobi").build();
-        Pobi.setId(12L);
+        AccountUser pobi = AccountUser.builder()
+                .name("pobi").build();
+        pobi.setId(12L);
         AccountUser harry = AccountUser.builder()
                 .name("Harry").build();
         harry.setId(13L);
         given(accountUserRepository.findById(anyLong()))
-                .willReturn(Optional.of(Pobi));
+                .willReturn(Optional.of(pobi));
         given(accountRepository.findByAccountNumber(anyString()))
                 .willReturn(Optional.of(Account.builder()
                         .accountUser(harry)
@@ -221,14 +227,14 @@ class AccountServiceTest {
     @DisplayName("해지 계좌는 잔액이 없어야 한다.")
     void deleteAccountFailed_balanceNotEmpty() {
         //given
-        AccountUser Pobi = AccountUser.builder()
-                .name("Pobi").build();
-        Pobi.setId(12L);
+        AccountUser pobi = AccountUser.builder()
+                .name("pobi").build();
+        pobi.setId(12L);
         given(accountUserRepository.findById(anyLong()))
-                .willReturn(Optional.of(Pobi));
+                .willReturn(Optional.of(pobi));
         given(accountRepository.findByAccountNumber(anyString()))
                 .willReturn(Optional.of(Account.builder()
-                        .accountUser(Pobi)
+                        .accountUser(pobi)
                         .balance(100L)
                         .accountNumber("1000000012").build()));
 
@@ -244,14 +250,16 @@ class AccountServiceTest {
     @DisplayName("해지 계좌는 해지할 수 없다.")
     void deleteAccountFailed_alreadyUnregistered() {
         //given
-        AccountUser Pobi = AccountUser.builder()
-                .name("Pobi").build();
-        Pobi.setId(12L);
+        AccountUser pobi = AccountUser.builder()
+                .name("pobi").build();
+        pobi.setId(12L);
+
         given(accountUserRepository.findById(anyLong()))
-                .willReturn(Optional.of(Pobi));
+                .willReturn(Optional.of(pobi));
+
         given(accountRepository.findByAccountNumber(anyString()))
                 .willReturn(Optional.of(Account.builder()
-                        .accountUser(Pobi)
+                        .accountUser(pobi)
                         .accountStatus(AccountStatus.UNREGISTERED)
                         .balance(0L)
                         .accountNumber("1000000012").build()));
@@ -265,30 +273,30 @@ class AccountServiceTest {
     }
 
     @Test
-    void successGetAccountsByUserId () {
+    void successGetAccountsByUserId() {
         //given
-        AccountUser Pobi = AccountUser.builder()
-                .name("Pobi").build();
-        Pobi.setId(12L);
+        AccountUser pobi = AccountUser.builder()
+                .name("pobi").build();
+        pobi.setId(12L);
         List<Account> accounts = Arrays.asList(
                 Account.builder()
-                        .accountUser(Pobi)
+                        .accountUser(pobi)
                         .accountNumber("1111111111")
                         .balance(1000L)
                         .build(),
                 Account.builder()
-                        .accountUser(Pobi)
+                        .accountUser(pobi)
                         .accountNumber("2222222222")
                         .balance(2000L)
                         .build(),
                 Account.builder()
-                        .accountUser(Pobi)
+                        .accountUser(pobi)
                         .accountNumber("3333333333")
                         .balance(3000L)
                         .build()
         );
         given(accountUserRepository.findById(anyLong()))
-                .willReturn(Optional.of(Pobi));
+                .willReturn(Optional.of(pobi));
         given(accountRepository.findByAccountUser(any()))
                 .willReturn(accounts);
 
@@ -304,8 +312,9 @@ class AccountServiceTest {
         assertEquals("3333333333", accountDtos.get(2).getAccountNumber());
         assertEquals(3000, accountDtos.get(2).getBalance());
     }
+
     @Test
-        void failedToGetAccounts () {
+    void failedToGetAccounts() {
         //given
         given(accountUserRepository.findById(anyLong()))
                 .willReturn(Optional.empty());

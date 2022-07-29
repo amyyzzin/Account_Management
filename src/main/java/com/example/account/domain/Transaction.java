@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 
-public class Transaction extends BaseEntity{
+public class Transaction extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     private TransactionType transactionType;

@@ -26,7 +26,6 @@ public class CreateAccount {
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-
     public static class Response {
         private Long userId;
         private String accountNumber;
@@ -40,5 +39,4 @@ public class CreateAccount {
                     .build();
         }
     }
-
 }

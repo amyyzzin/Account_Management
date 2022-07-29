@@ -2,7 +2,6 @@ package com.example.account.service;
 
 import com.example.account.dto.UseBalance;
 import com.example.account.exception.AccountException;
-import com.example.account.type.ErrorCode;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,7 +11,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static com.example.account.type.ErrorCode.ACCOUNT_NOT_FOUND;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -72,6 +72,4 @@ class LockAopAspectTest {
         assertEquals("54321", lockArgumentCaptor.getValue());
         assertEquals("54321", unlockArgumentCaptor.getValue());
     }
-
-
 }
