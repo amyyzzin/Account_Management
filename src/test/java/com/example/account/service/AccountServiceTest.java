@@ -53,12 +53,12 @@ class AccountServiceTest {
         given(accountRepository.findFirstByOrderByIdDesc())
                 .willReturn(Optional.of(Account.builder()
                         .accountUser(user)
-                        .accountNumber("1000000012").build()));
+                        .accountNumber("1000000001").build()));
 
         given(accountRepository.save(any()))
                 .willReturn(Account.builder()
                         .accountUser(user)
-                        .accountNumber("1000000015").build());
+                        .accountNumber("1000000002").build());
 
         ArgumentCaptor<Account> captor = ArgumentCaptor.forClass(Account.class);
 
@@ -68,12 +68,11 @@ class AccountServiceTest {
         //then
         verify(accountRepository, times(1)).save(captor.capture());
         assertEquals(12L, accountDto.getUserId());
-        assertEquals("1000000013", captor.getValue().getAccountNumber());
+        assertEquals("1000000002", captor.getValue().getAccountNumber());
 
 //        int accountNumber = Integer.parseInt(captor.getValue().getAccountNumber());
 //        assertTrue(accountNumber >= AccountService.INIT_ACCOUNT_NUMBER
 //                && accountNumber <= AccountService.INIT_ACCOUNT_NUMBER + 1000);
-
     }
 
     @Test
