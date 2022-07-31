@@ -14,6 +14,8 @@ import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 import static com.example.account.type.AccountStatus.IN_USE;
@@ -22,9 +24,13 @@ import static com.example.account.type.ErrorCode.*;
 @Service
 @RequiredArgsConstructor
 public class AccountService {
+
+//    public static final int INIT_ACCOUNT_NUMBER = 1000000000;
+//
+//    public static final int RANDOM_RANGE = 1000;
+
     private final AccountRepository accountRepository;
     private final AccountUserRepository accountUserRepository;
-
 
     /**
      * 사용자가 있는지 조회
@@ -39,6 +45,16 @@ public class AccountService {
         String newAccountNumber = accountRepository.findFirstByOrderByIdDesc()
                 .map(account -> (Integer.parseInt(account.getAccountNumber())) + 1 + "")
                 .orElse("1000000000");
+
+//        Optional<Account> lastAccount = accountRepository.findFirstByOrderByIdDesc();
+//        String newAccountNumber = null;
+//
+//        if (lastAccount.isEmpty()) {
+//            newAccountNumber = ThreadLocalRandom.current().nextInt(INIT_ACCOUNT_NUMBER, INIT_ACCOUNT_NUMBER + RANDOM_RANGE) + "";
+//        } else {
+//            int num = Integer.parseInt(lastAccount.get().getAccountNumber());
+//            newAccountNumber = ThreadLocalRandom.current().nextInt(num, num + RANDOM_RANGE) + "";
+//        }
 
         return AccountDto.fromEntity(
                 accountRepository.save(Account.builder()

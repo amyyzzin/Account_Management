@@ -9,19 +9,20 @@ import com.example.account.repository.AccountUserRepository;
 import com.example.account.type.AccountStatus;
 import com.example.account.type.ErrorCode;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.annotation.Repeat;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
@@ -68,6 +69,11 @@ class AccountServiceTest {
         verify(accountRepository, times(1)).save(captor.capture());
         assertEquals(12L, accountDto.getUserId());
         assertEquals("1000000013", captor.getValue().getAccountNumber());
+
+//        int accountNumber = Integer.parseInt(captor.getValue().getAccountNumber());
+//        assertTrue(accountNumber >= AccountService.INIT_ACCOUNT_NUMBER
+//                && accountNumber <= AccountService.INIT_ACCOUNT_NUMBER + 1000);
+
     }
 
     @Test
@@ -94,7 +100,9 @@ class AccountServiceTest {
         //then
         verify(accountRepository, times(1)).save(captor.capture());
         assertEquals(15L, accountDto.getUserId());
-        assertEquals("1000000000", captor.getValue().getAccountNumber());
+
+        int accountNumber = Integer.parseInt(captor.getValue().getAccountNumber());
+        assertTrue(accountNumber >= 1000000000 && accountNumber <= 1000001000);
     }
 
     @Test

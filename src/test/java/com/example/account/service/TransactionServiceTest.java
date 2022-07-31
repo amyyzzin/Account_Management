@@ -404,7 +404,7 @@ class TransactionServiceTest {
                         "1000000000", CANCEL_AMOUNT));
 
         //then
-        assertEquals(ErrorCode.CANCEL_MUST_FULLY, exception.getErrorCode());
+        assertEquals(ErrorCode.CANCEL_AMOUNT_NOT_MATCHED, exception.getErrorCode());
     }
 
     @Test

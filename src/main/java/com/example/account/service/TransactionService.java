@@ -64,6 +64,9 @@ public class TransactionService {
         if (account.getBalance() < amount) {
             throw new AccountException(ErrorCode.AMOUNT_EXCEED_BALANCE);
         }
+        if (10000000 < amount) {
+            throw new AccountException(ErrorCode.AMOUNT_EXCEED_LIMITED);
+        }
     }
 
     @Transactional
@@ -114,7 +117,7 @@ public class TransactionService {
             throw new AccountException(ErrorCode.TRANSACTION_ACCOUNT_UN_MATCH);
         }
         if (!Objects.equals(transaction.getAmount(), amount)) {
-            throw new AccountException(ErrorCode.CANCEL_MUST_FULLY);
+            throw new AccountException(ErrorCode.CANCEL_AMOUNT_NOT_MATCHED);
         }
         if (transaction.getTransactedAt().isBefore(LocalDateTime.now().minusYears(1))) {
             throw new AccountException(ErrorCode.TOO_OLD_ORDER_TO_CANCEL);
