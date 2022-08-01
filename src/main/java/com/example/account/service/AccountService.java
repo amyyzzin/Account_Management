@@ -51,8 +51,12 @@ public class AccountService {
          *      -> range 1000 사이로 계좌 랜덤 생성
          *      -> 생성 된 계좌 이후 생성 되는 계좌는 기존 생성 계좌보다 큰 값으로 랜덤 구현
          * 문제점: 계좌 생성 자체는 랜덤으로 가능하지만,
-         *      랜덤으로 배정되면서 발생하는 문제점을 전혀 고려하지 않음
+         *      랜덤으로 배정되면서 발생하는 문제점은 고려하지 않음
+         *      ex) 랜덤 배정의 기준 : 현재는 범위 1000 이내로 증가
+         *          다른 유저의 경우 직전 생성 된 계좌에서 증가됨
+         *              -> 랜덤 증가하다보면 계좌 한계점이 올 것
          */
+
 //        Optional<Account> lastAccount = accountRepository.findFirstByOrderByIdDesc();
 //        String newAccountNumber = null;
 //

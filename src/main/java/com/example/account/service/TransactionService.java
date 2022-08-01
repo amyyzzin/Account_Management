@@ -64,9 +64,6 @@ public class TransactionService {
         if (account.getBalance() < amount) {
             throw new AccountException(ErrorCode.AMOUNT_EXCEED_BALANCE);
         }
-        if (10000000 < amount) {
-            throw new AccountException(ErrorCode.AMOUNT_EXCEED_LIMITED);
-        }
     }
 
     @Transactional

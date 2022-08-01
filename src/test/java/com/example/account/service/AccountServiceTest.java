@@ -41,6 +41,7 @@ class AccountServiceTest {
     private AccountService accountService;
 
     @Test
+//    @RepeatedTest(10000) 랜덤 확인을 위한 테스트 반복
     void createAccountSuccess() {
         //given
         AccountUser user = AccountUser.builder()
